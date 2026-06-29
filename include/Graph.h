@@ -1,3 +1,15 @@
+/*
+ * Graph.h
+ * Core templated adjacency-list graph representation.
+ *
+ * Design:
+ * - Uses an adjacency list, making it suitable for sparse graphs.
+ * - Uses std::unordered_map so nodes can be of any hashable type
+ *   (e.g., int, std::string, or custom types).
+ * - Not thread-safe. External synchronization is required for
+ *   concurrent access.
+ */
+
 #pragma once
 #include <unordered_map>
 #include <vector>
@@ -7,6 +19,7 @@
 
 namespace graphlib {
 
+// Represents a single outgoing edge from a node.
 template <typename T, typename W = int>
 struct Edge {
     T to;       // destination node
@@ -18,14 +31,25 @@ struct Edge {
 template <typename T, typename W = int>
 class Graph {
 public:
+    // Adjacency list: node -> list of outgoing edges
     using AdjList = std::unordered_map<T, std::vector<Edge<T, W>>>;
 
+    // ---- Constructor ----
+    
+    // Creates a directed graph by default.
+    // Pass false to create an undirected graph.
     explicit Graph(bool directed = true) : directed_(directed) {}
 
+    // ---- Modifiers ----
+
+    // Adds a node if it does not already exist.
     void addNode(const T& node) {
         adjacency_.emplace(node, std::vector<Edge<T, W>>{});
     }
 
+    // Adds an edge from 'from' to 'to'.
+    // For undirected graphs, also inserts the reverse edge.
+    // Creates the destination node if it does not already exist (for directed graphs).
     void addEdge(const T& from, const T& to, W w = W{1}) {
         adjacency_[from].emplace_back(to, w);
 
@@ -36,7 +60,9 @@ public:
             adjacency_.emplace(to, std::vector<Edge<T, W>>{});
     }
 
-    void removeEdge(const T& from, const T& to){
+    // Removes the edge from 'from' to 'to'.
+    // For undirected graphs, removes the reverse edge as well.
+    void removeEdge(const T& from, const T& to) {
         auto it = adjacency_.find(from);
         if (it == adjacency_.end()) return;
 
@@ -47,7 +73,7 @@ public:
             edges.end()
         );
 
-        if(!directed_){
+        if(!directed_) {
             auto& rev = adjacency_[to];
             rev.erase(
                 std::remove_if(rev.begin(), rev.end(),
@@ -57,6 +83,10 @@ public:
         }
     }
 
+    // ---- Queries ----
+    
+    // Returns all outgoing edges from a node.
+    // Throws std::out_of_range if the node does not exist.
     const std::vector<Edge<T, W>>& neighbours(const T& node) const {
         auto it = adjacency_.find(node);
 
@@ -80,8 +110,10 @@ public:
         return false;
     }
 
+    // Returns a list of all nodes currently in the graph.
     std::vector<T> nodes() const {
         std::vector<T> result;
+        result.reserve(adjacency_.size());
 
         for(const auto& [node, _] : adjacency_) {
             result.push_back(node);
@@ -93,6 +125,9 @@ public:
     int nodeCount() const { return static_cast<int>(adjacency_.size()); }
     bool isDirected() const { return directed_; }
 
+    // Counts stored edges.
+    // Undirected graphs store each edge twice,
+    // so divide the total by two.
     int edgeCount() const {
         int total = 0;
 
@@ -103,9 +138,11 @@ public:
         return directed_ ? total : total / 2;
     }
 
+    // Read-only access to the underlying adjacency list.
     const AdjList& adjacency() const { return adjacency_; }
 
-    friend std::ostream& operator<<(std::ostream& os, const Graph<T, W> g) {
+    // Pretty-print the graph in adjacency-list form.
+    friend std::ostream& operator<<(std::ostream& os, const Graph<T, W>& g) {
         os << (g.directed_ ? "Directed" : "Undirected")
            << " graph |V| = " << g.nodeCount()
            << "  |E| = " << g.edgeCount() << "\n";
@@ -123,8 +160,8 @@ public:
     }
 
 private:
-    AdjList adjacency_;  // node -> list of outgoing edges
-    bool    directed_;   // true for directed graphs
+    AdjList adjacency_;   // node -> outgoing edges
+    bool directed_;       // true = directed, false = undirected
 };
 
 } // namespace graphlib
