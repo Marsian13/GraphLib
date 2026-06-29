@@ -24,7 +24,7 @@ if(BUILD_TESTS)
 
         set(TEST_FILES
             # tests/test_traversal.cpp
-            # tests/test_shortestpath.cpp
+            tests/test_shortestPath.cpp
             # tests/test_spanningtree.cpp
             # tests/test_connectivity.cpp
             # tests/test_networkflow.cpp
