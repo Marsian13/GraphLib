@@ -184,4 +184,4 @@ FloydWarshallResult<T, W> floydWarshall(const Graph<T, W>& graph) {
     return result;
 }
 
-} // graphlib
+} // namespace graphlib

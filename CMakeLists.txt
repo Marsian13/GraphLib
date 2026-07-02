@@ -23,7 +23,7 @@ if(BUILD_TESTS)
         enable_testing()
 
         set(TEST_FILES
-            # tests/test_traversal.cpp
+            tests/test_traversal.cpp
             tests/test_shortestPath.cpp
             # tests/test_spanningtree.cpp
             # tests/test_connectivity.cpp
