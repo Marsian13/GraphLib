@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../include/Graph.h"
-#include "../include/Traversal.h"
+#include "Graph.h"
+#include "Traversal.h"
 #include <string>
 #include <vector>
 #include <algorithm>

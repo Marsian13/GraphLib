@@ -23,12 +23,12 @@ if(BUILD_TESTS)
         enable_testing()
 
         set(TEST_FILES
+            tests/test_graph.cpp
             tests/test_traversal.cpp
             tests/test_shortestPath.cpp
-            # tests/test_spanningtree.cpp
+            tests/test_spanningtree.cpp
             # tests/test_connectivity.cpp
             # tests/test_networkflow.cpp
-            tests/test_graph.cpp
         )
 
         foreach(test_file ${TEST_FILES})
