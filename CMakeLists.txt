@@ -27,8 +27,8 @@ if(BUILD_TESTS)
             tests/test_traversal.cpp
             tests/test_shortestPath.cpp
             tests/test_spanningtree.cpp
-            # tests/test_connectivity.cpp
-            # tests/test_networkflow.cpp
+            tests/test_connectivity.cpp
+            tests/test_networkflow.cpp
         )
 
         foreach(test_file ${TEST_FILES})
